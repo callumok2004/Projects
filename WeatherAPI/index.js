@@ -1,9 +1,10 @@
-const WAPI = require("weather-js"), fetch = require("node-fetch");
+const WAPI = require("weather-js"), fetch = require("node-fetch"), url = require("url");
 
 module.exports = class WeatherAPI {
-    constructor(a, app) {
+    constructor(app) {
         app.get("/weather/:location", (req, res) => {
-            this.getInfo(req.params.location, res)
+            const query = url.parse(req.url, true).query;
+            this.getInfo(req.params.location, res, query.degreeType)
         })
     }
     getInfo(location, res, DT) {
@@ -14,7 +15,7 @@ module.exports = class WeatherAPI {
             .then(json => {
                 result[0].advanced = json;
                 res.json(result);
-            })
+            });
         });
     };
 };
